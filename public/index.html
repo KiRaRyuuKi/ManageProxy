@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Proxy</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@headlessui/react@1.7.17/dist/headlessui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.0.18/solid/index.min.js"></script>
+</head>
+
+<body class="h-screen flex flex-col bg-gray-50">
+    <!-- Header Style -->
+    <div class="bg-white border-b border-gray-200 py-4 px-4.5 flex justify-between items-center">
+        <div class="text-start">
+            <h3 class="text-xl font-medium text-gray-800">
+                Proxy Configuration Panel
+            </h3>
+            <p class="text-sm text-gray-500">
+                Configure and manage your proxy settings in one place.
+            </p>
+        </div>
+        <form action="/proxy" method="GET" target="iframe" class="flex items-center space-x-2">
+            <div class="relative" id="protocol-dropdown">
+                <button id="dropdown-btn"
+                    class="relative block rounded-md border border-gray-300 bg-white w-25 px-3 py-1.5 text-left text-sm text-black/60 focus:outline-none focus:ring-1 focus:ring-gray-500">
+                    <span id="selected-protocol">HTTP</span>
+                    <svg class="absolute top-2 right-2.5 w-4 h-4 text-black/60" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <div id="dropdown-menu"
+                    class="absolute z-50 mt-1 w-25 bg-white border border-gray-300 rounded-md shadow-lg hidden">
+                    <div class="cursor-pointer py-1.5 px-3 text-sm flex justify-between items-center" data-value="http"
+                        data-name="HTTP">
+                        <span>HTTP</span>
+                        <svg class="rounded bg-black p-0.5 w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20" fill="currentColor" style="display: block;">
+                            <path fill-rule="evenodd"
+                                d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="cursor-pointer py-1.5 px-3 text-sm flex justify-between items-center" data-value="https"
+                        data-name="HTTPS">
+                        <span>HTTPS</span>
+                        <svg class="rounded bg-black p-0.5 w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20" fill="currentColor" style="display: none;">
+                            <path fill-rule="evenodd"
+                                d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <input type="text" id="address" placeholder="192.168.x.x"
+                class="border border-gray-300 rounded-md w-40 px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-gray-500" />
+            <input type="number" id="port" placeholder="80" min="1" max="65535"
+                class="border border-gray-300 rounded-md w-22 px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-gray-500" />
+            <button id="connect-btn" type="submit"
+                class="bg-gray-800 hover:bg-black text-white px-3 py-1.5 rounded-md text-sm flex items-center">
+                <svg class="w-4 h-4 mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                    viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M8.6 5.2A1 1 0 0 0 7 6v12a1 1 0 0 0 1.6.8l8-6a1 1 0 0 0 0-1.6l-8-6Z"
+                        clip-rule="evenodd" />
+                </svg>
+                <p class="mb-0.5">Connect</p>
+            </button>
+            <button id="log-btn"
+                class="bg-gray-800 hover:bg-black text-white px-3 py-1.5 rounded-md text-sm flex items-center">
+                <svg class="w-4 h-4 mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+                        d="M20 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6h-2m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4" />
+                </svg>
+                <p class="mb-0.5">Logs</p>
+            </button>
+        </form>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex flex-1 mx-auto w-full p-4">
+        <!-- Frame Display -->
+        <div
+            class="flex-1 flex justify-center items-center border border-gray-200 rounded-md bg-white shadow-sm relative">
+            <div id="loading-indicator"
+                class="absolute top-0 left-0 right-0 bg-blue-50 text-gray-600 py-2 px-3 text-sm border-b border-blue-100 hidden">
+                <div class="flex items-center">
+                    <svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    Loading...
+                </div>
+            </div>
+            <div id="placeholder" class="text-gray-500 flex flex-col items-center justify-center p-8">
+                <svg class="w-12 h-12 mb-3 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6" />
+                </svg>
+                <p>Masukkan Address dan Port</p>
+                <p class="text-sm text-gray-400 mt-1">Lalu klik tombol Connect untuk memulai</p>
+            </div>
+            <iframe id="proxy-frame" name="iframe" class="w-full h-full border-none rounded-md hidden"></iframe>
+        </div>
+
+        <!-- Log Panel -->
+        <div id="log-panel" class="w-64 ml-4 border border-gray-200 rounded-md shadow-sm bg-white overflow-hidden">
+            <div
+                class="bg-gray-50 border-b border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 flex justify-between items-center">
+                Connection Log
+                <div class="flex space-x-2">
+                    <!-- Clear Log -->
+                    <button id="clear-log-btn" class="text-gray-400 hover:text-gray-600" title="Clear Log">
+                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                            height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4" />
+                        </svg>
+                    </button>
+
+                    <!-- Close Log -->
+                    <button id="close-log-btn" class="text-gray-400 hover:text-red-600" title="Close Log">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div id="log-content" class="p-3 text-sm text-start font-mono h-[calc(100vh-10rem)] overflow-y-auto">
+                <div class="text-gray-400 text-xs italic"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

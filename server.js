@@ -1,20 +1,17 @@
 const express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const path = require('path');
-const cors = require('cors');
-
 const app = express();
 const port = 2550;
 
-app.use(cors());
+require('events').EventEmitter.defaultMaxListeners = 20;
 
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static('public'));
 
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+app.get('/', (_req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Middleware untuk proxy
 app.use('/proxy', (req, res, next) => {
     const protocol = req.query.protocol || 'http';
     const targetAddress = req.query.address;
@@ -33,16 +30,18 @@ app.use('/proxy', (req, res, next) => {
         changeOrigin: true,
         logLevel: 'debug',
         secure: protocol === 'https',
-        onError: (err, req, res) => {
+        onError: (err, _req, res) => {
             console.error(`Proxy error: ${target}: ${err.message}`);
-            res.status(500).send(`Proxy error: ${err.message}`);
+            res.status(500).send(`Error: ${err.message}`);
         },
-        onProxyRes: (proxyRes) => {
+        onProxyRes: (proxyRes, _req, _res) => {
             console.log(`Proxy berhasil: ${target}`);
             delete proxyRes.headers['x-frame-options'];
             delete proxyRes.headers['content-security-policy'];
         },
-        pathRewrite: { '^/proxy': '' }
+        pathRewrite: {
+            '^/proxy': ''
+        }
     });
 
     return proxy(req, res, next);
